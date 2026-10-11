@@ -1,0 +1,20 @@
+{
+  "servers": {
+    "description": "服务器列表",
+    "type": "list",
+    "default": [],
+    "hint": "一行一个，格式「名称|地址」，比如 整合包服|mc.example.com:25565。不写端口会先查 SRV 记录，查不到就用 25565；不写名称就直接显示地址。"
+  },
+  "timeout": {
+    "description": "超时（秒）",
+    "type": "int",
+    "default": 5,
+    "hint": "每个服务器最多等多久，几个服务器是同时查的。"
+  },
+  "show_players": {
+    "description": "显示玩家名",
+    "type": "bool",
+    "default": true,
+    "hint": "服务器最多只返回 12 个玩家名，开了隐身的不算，人多时只列一部分。"
+  }
+}
