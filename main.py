@@ -38,7 +38,10 @@ class McStatusPlugin(Star):
         yield event.plain_result("\n\n".join(blocks))
 
     def _format(self, name: str, status: ServerStatus) -> str:
-        lines = [f"🟢 {name}  {status.online}/{status.max} 人  {status.latency}ms"]
+        head = f"🟢 {name}  {status.online}/{status.max} 人"
+        if self.config.get("show_latency", False):
+            head += f"  {status.latency}ms"
+        lines = [head]
         if status.version:
             lines.append(f"版本：{status.version}")
         if self.config.get("show_players", True) and status.players:

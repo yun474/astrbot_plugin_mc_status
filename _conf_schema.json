@@ -17,6 +17,12 @@
     "default": "",
     "hint": "留空就直连。要走 Clash 就填它的局域网地址和端口，比如 http://192.168.1.10:7890，Clash 那边记得打开「允许局域网连接」。"
   },
+  "show_latency": {
+    "description": "显示延迟",
+    "type": "bool",
+    "default": false,
+    "hint": "在人数后面加上延迟，比如 32ms。走代理时是经过代理的往返时间。"
+  },
   "show_players": {
     "description": "显示玩家名",
     "type": "bool",
