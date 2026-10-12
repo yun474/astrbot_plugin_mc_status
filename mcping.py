@@ -8,6 +8,7 @@ import re
 import struct
 import time
 from dataclasses import dataclass
+from urllib.parse import urlsplit
 
 import dns.asyncresolver
 import dns.exception
@@ -30,13 +31,13 @@ class ServerStatus:
     latency: int
 
 
-async def query(address: str, timeout: float) -> ServerStatus:
-    return await asyncio.wait_for(_query(address), timeout)
+async def query(address: str, timeout: float, proxy: str = "") -> ServerStatus:
+    return await asyncio.wait_for(_query(address, proxy), timeout)
 
 
-async def _query(address: str) -> ServerStatus:
+async def _query(address: str, proxy: str) -> ServerStatus:
     host, port = await _resolve(address)
-    reader, writer = await asyncio.open_connection(host, port)
+    reader, writer = await _connect(host, port, proxy)
     try:
         handshake = (
             _varint(PROTOCOL_VERSION)
@@ -55,6 +56,25 @@ async def _query(address: str) -> ServerStatus:
     finally:
         writer.close()
     return _parse(json.loads(data), latency)
+
+
+async def _connect(host: str, port: int, proxy: str):
+    if not proxy:
+        return await asyncio.open_connection(host, port)
+    # 走 HTTP 代理的 CONNECT 隧道，目标域名交给代理去解析
+    url = urlsplit(proxy if "://" in proxy else f"http://{proxy}")
+    reader, writer = await asyncio.open_connection(url.hostname, url.port or 80)
+    target = f"{host}:{port}"
+    try:
+        writer.write(f"CONNECT {target} HTTP/1.1\r\nHost: {target}\r\n\r\n".encode())
+        await writer.drain()
+        head = await reader.readuntil(b"\r\n\r\n")
+        if head.split(maxsplit=2)[1:2] != [b"200"]:
+            raise ConnectionError(f"代理没放行: {head.splitlines()[0].decode(errors='replace')}")
+    except BaseException:
+        writer.close()
+        raise
+    return reader, writer
 
 
 async def _resolve(address: str) -> tuple[str, int]:

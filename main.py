@@ -23,8 +23,9 @@ class McStatusPlugin(Star):
             return
 
         timeout = self.config.get("timeout", 5)
+        proxy = self.config.get("proxy", "").strip()
         results = await asyncio.gather(
-            *(query(address, timeout) for _, address in servers),
+            *(query(address, timeout, proxy) for _, address in servers),
             return_exceptions=True,
         )
         blocks = []

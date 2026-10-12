@@ -2,6 +2,6 @@ name: astrbot_plugin_mc_status
 display_name: MC 服务器状态
 author: yun474
 desc: 发 /mc 查我的世界 Java 版服务器（整合包服也行）的在线人数、玩家和延迟。
-version: 1.0.0
+version: 1.0.1
 repo: "https://github.com/yun474/astrbot_plugin_mc_status"
 astrbot_version: ">=4.16"

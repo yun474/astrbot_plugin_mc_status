@@ -11,6 +11,12 @@
     "default": 5,
     "hint": "每个服务器最多等多久，几个服务器是同时查的。"
   },
+  "proxy": {
+    "description": "HTTP 代理",
+    "type": "string",
+    "default": "",
+    "hint": "留空就直连。要走 Clash 就填它的局域网地址和端口，比如 http://192.168.1.10:7890，Clash 那边记得打开「允许局域网连接」。"
+  },
   "show_players": {
     "description": "显示玩家名",
     "type": "bool",
